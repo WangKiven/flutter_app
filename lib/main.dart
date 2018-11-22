@@ -1,4 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+
+/*void main() => runApp(new Center(
+      child: new Text(
+        'Hello flutter!',
+        textDirection: TextDirection.ltr,
+      ),
+    ));*/
 
 void main() => runApp(MyApp());
 
@@ -43,6 +51,29 @@ class MyHomePage extends StatefulWidget {
   _MyHomePageState createState() => _MyHomePageState();
 }
 
+class Point {
+  Point(this.x, this.y);
+
+  Point.fromXy(num n) {
+    x = n;
+    y = n;
+  }
+
+  num x;
+  num y;
+  num z = 0;
+
+  num get a => z;
+
+  set a(num value) => z = value;
+}
+
+class Line {}
+
+class Point2D extends Point with Line {
+  Point2D(num x, num y) : super(x, y);
+}
+
 class _MyHomePageState extends State<MyHomePage> {
   int _counter = 0;
 
@@ -55,6 +86,29 @@ class _MyHomePageState extends State<MyHomePage> {
       // called again, and so nothing would appear to happen.
       _counter++;
     });
+
+    var name = 'bob';
+    print('name = ' + name);
+
+    int age;
+
+    print('age = ' + age.toString());
+
+    final type = 9;
+    const int sys = 7;
+
+    var list = []; // [] 创建的是一个空的list集合
+    list.add(5);
+    list.add('4');
+
+    list = const []; //const []创建一个空的、不可变的列表
+//    list.add(5);
+
+    list = [3, 4, 6];
+    print(list);
+
+    var point = new Point(1, 2);
+    var p2 = Point.fromXy(4);
   }
 
   @override
@@ -99,6 +153,13 @@ class _MyHomePageState extends State<MyHomePage> {
               '$_counter',
               style: Theme.of(context).textTheme.display1,
             ),
+            TextField(),
+            RaisedButton(
+              onPressed: () {
+                _next(context);
+              },
+              child: Text('next'),
+            )
           ],
         ),
       ),
@@ -107,6 +168,45 @@ class _MyHomePageState extends State<MyHomePage> {
         tooltip: 'Increment',
         child: Icon(Icons.add),
       ), // This trailing comma makes auto-formatting nicer for build methods.
+    );
+  }
+
+  _next(BuildContext context) async {
+    final result = await Navigator.push(
+        context,
+        new MaterialPageRoute(
+            builder: (context) => new SecondScreen(
+                  count: _counter,
+                )));
+
+    showDialog(context: context, child: Center(child: Text('${result == null? 'No data': result}')));
+
+
+    final response =
+    await http.get('https://jsonplaceholder.typicode.com/posts/1');
+  }
+}
+
+class SecondScreen extends StatelessWidget {
+  final int count;
+
+  SecondScreen({Key key, this.count = 0}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    // TODO: implement build
+    return new Scaffold(
+      appBar: new AppBar(
+        title: new Text('Second screen'),
+      ),
+      body: new Center(
+        child: new RaisedButton(
+          onPressed: () {
+            Navigator.pop(context, 'Hello NO.$count');
+          },
+          child: Text('Go back $count'),
+        ),
+      ),
     );
   }
 }
