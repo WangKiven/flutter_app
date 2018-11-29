@@ -159,6 +159,12 @@ class _MyHomePageState extends State<MyHomePage> {
                 _next(context);
               },
               child: Text('next'),
+            ),
+            RaisedButton(
+              onPressed: () {
+                _toList(context);
+              },
+              child: Text('listView'),
             )
           ],
         ),
@@ -179,11 +185,17 @@ class _MyHomePageState extends State<MyHomePage> {
                   count: _counter,
                 )));
 
-    showDialog(context: context, child: Center(child: Text('${result == null? 'No data': result}')));
-
+    showDialog(
+        context: context,
+        child: Center(child: Text('${result == null ? 'No data' : result}')));
 
     final response =
-    await http.get('https://jsonplaceholder.typicode.com/posts/1');
+        await http.get('https://jsonplaceholder.typicode.com/posts/1');
+  }
+
+  _toList(BuildContext context) {
+    Navigator.push(
+        context, new MaterialPageRoute(builder: (context) => new ListScreen()));
   }
 }
 
@@ -209,4 +221,46 @@ class SecondScreen extends StatelessWidget {
       ),
     );
   }
+}
+
+class ListScreen extends StatefulWidget {
+
+  @override
+  State<StatefulWidget> createState() {
+    // TODO: implement createState
+    return new _ListScreenState();
+  }
+}
+
+class _ListScreenState extends State<ListScreen> {
+  final sc = new ScrollController();
+
+  @override
+  Widget build(BuildContext context) {
+
+    var lstView = new ListView.builder(
+        itemCount: 10000,
+        controller: sc,
+        itemBuilder: (context, index) {
+          return new ListTile(
+            title: new Text('Hello $index'),
+            onTap: () {
+              _to100(context, index);
+            },
+          );
+        });
+
+    // TODO: implement build
+    return new Scaffold(
+      appBar: new AppBar(
+        title: new Text('ListView Demo'),
+      ),
+      body: lstView,
+    );
+  }
+
+  _to100(BuildContext context, int index) {
+    sc.jumpTo(500);
+  }
+
 }
